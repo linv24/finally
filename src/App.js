@@ -1,9 +1,12 @@
 import "./App.css";
+import Header from "./components/Header";
+import TaskList from "./components/TaskList";
 
 export default function App() {
   return (
     <>
-      <h1>Final.ly</h1>
+      <Header />
+      <TaskList />
     </>
   )
 }
