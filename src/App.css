@@ -1,10 +1,16 @@
 .App {
   text-align: center;
+  display: flex;
 }
 
 .header {
   margin: 20px;
   display: flex;
+}
+
+.taskListContainer {
+  display: flex;
+  flex-direction: column;
 }
 
 .taskList {
@@ -13,14 +19,20 @@
 }
 
 .taskItem {
-  border: 2px solid skyblue;
+  border: 2px solid lightslategray;
   border-radius: 5px;
+  display: flex;
+  flex-direction: row;
   margin: 5px;
   padding: 5px;
 }
 
 .taskItem:hover {
-  background-color: skyblue;
+  background-color: lightgray;
+}
+
+.taskItemCheckbox {
+  margin-right: 10px;
 }
 
 .taskTitle {

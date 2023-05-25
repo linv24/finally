@@ -1,5 +1,6 @@
 import { Fragment, useState } from "react";
 import TaskInput from "./TaskInput";
+import TaskItem from "./TaskItem";
 import "../App.css"
 
 function Task(title, description) {
@@ -31,21 +32,18 @@ export default function TaskList() {
 	}
 
     return (
-        <>
-			<TaskInput 
+        <div className="taskListContainer">
+			<TaskInput
 				newTask={newTask}
 				handleNewTaskChange={handleNewTaskChange}
 				handleNewTaskSubmit={handleNewTaskSubmit} />
             <ul className="taskList">
                 {taskList.map((task) => (
 					<Fragment key={task.id}>
-						<li className="taskItem">
-							<p className="taskTitle">{task.title}</p>
-							<p className="taskDescription">{task.description}</p>
-						</li>
-					</Fragment>
-				))}
+						<TaskItem 
+							task={task} />
+					</Fragment>))}
             </ul>
-        </>
+        </div>
     );
 }
