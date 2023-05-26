@@ -3,12 +3,12 @@ import TaskInput from "./TaskInput";
 import TaskItem from "./TaskItem";
 import "../App.css"
 
-function Task(id, title, description, subNum, parent=null) {
+function Task(id, title, description, subNum, parentId=null) {
 	this.id = id
     this.title = title;
     this.description = description;
 	this.subNum = subNum
-	this.parent = parent;
+	this.parentId = parentId;
 }
 
 export default function TaskList() {
@@ -43,15 +43,15 @@ export default function TaskList() {
 	}
 
 	function handleKeyDown(e) {
-		console.log('keydown', selectedTaskId)
-		if (e.key === "ArrowRight" && (selectedTaskId !== null)) {
-			console.log('selected', selectedTaskId)
-			convertToSubtask(selectedTaskId)
-		}
+		// console.log('keydown', selectedTaskId)
+		// if (e.key === "ArrowRight" && (selectedTaskId !== null)) {
+		// 	console.log('selected', selectedTaskId)
+		// 	convertToSubtask(selectedTaskId)
+		// }
 	}
 
 	function convertToSubtask(taskId) {
-		console.log('subtask', taskId)
+		// TODO: optimization, store max subNum, only check all parents when previous subNum = max
 		const taskIx = taskList.findIndex((task) => task.id === taskId)
 		const task = taskList[taskIx];
 		if (taskIx > 0) { // Cannot make subtask of first task in list
@@ -59,13 +59,15 @@ export default function TaskList() {
 			const parentTask = [...taskList.slice(0, taskIx)].reverse().find(
 				(pt) => pt.subNum === task.subNum
 			)
-			// Create new subtask
-			const newSubtask = {
-				...task,
-				subNum: task.subNum + 1,
-				parent: parentTask
+			if (parentTask !== undefined) { // Can only subtask if a parent with subNum - 1 exists
+				// Create new subtask
+				const newSubtask = {
+					...task,
+					subNum: task.subNum + 1,
+					parentId: parentTask.id
+				}
+				setTaskList(taskList.slice(0, taskIx).concat(newSubtask).concat(taskList.slice(taskIx + 1)));
 			}
-			setTaskList(taskList.slice(taskIx).concat(newSubtask).concat(taskList.slice(taskIx + 1)));
 		}
 	}
 
@@ -80,7 +82,8 @@ export default function TaskList() {
 					<Fragment key={task.id}>
 						<TaskItem 
 							task={task}
-							handleSelectTask={handleSelectTask} />
+							handleSelectTask={handleSelectTask}
+							convertToSubtask={convertToSubtask} />
 					</Fragment>))}
             </ul>
         </div>
