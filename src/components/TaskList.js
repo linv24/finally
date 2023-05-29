@@ -81,15 +81,10 @@ export default function TaskList() {
 	}
 
 	function handleKeyDown(e) {
-		console.log('keydown', e.key);
 		if (selectedTaskId !== undefined) {
 			switch (e.key) {
-				case 'ArrowRight': convertToSubtask(selectedTaskId); 
-					console.log('sub', selectedTaskId);
-					break;
-				case 'ArrowLeft': convertToSupertask(selectedTaskId); 
-					console.log('super', selectedTaskId);	
-					break;
+				case 'ArrowRight': convertToSubtask(selectedTaskId); break;
+				case 'ArrowLeft': convertToSupertask(selectedTaskId); break;
 			}
 		}
 	}
@@ -220,9 +215,13 @@ export default function TaskList() {
 			newTask.subNum--;
 			newTask.parent = newParentTaskId;
 			// Recursively decrement subNum of task's children
-			newTask.children.forEach((childId) => {
-				newTaskData.get(childId).subNum--;
-			})
+			const queue = [...newTask.children];
+			while (queue.length > 0) {
+				const childId = queue.shift();
+				const childTask = newTaskData.get(childId);
+				childTask.subNum--;
+				queue.push(...childTask.children);
+			}
 
 			setTaskData(newTaskData);
 		}

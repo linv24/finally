@@ -10,8 +10,6 @@ export default function TaskItem({ task, selectedTaskId, handleSelectTask, conve
                 <p className="taskTitle">{task.title}</p>
                 <p className="taskDescription">{task.description}</p>
             </div>
-            <button type="button" onClick={(e) => convertToSubtask(task.id)}>sub</button>
-            <button type="button" onClick={(e) => convertToSupertask(task.id)}>super</button>
             <span className="spanTest">
                 id = {task.id}, 
                 subNum = {task.subNum}, 
