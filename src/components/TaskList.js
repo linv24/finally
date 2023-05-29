@@ -4,32 +4,42 @@ import TaskItem from './TaskItem';
 import '../App.css'
 // TODO add assertions
 
+class Task {
+	/**
+	 * 
+	 * @param {Object} 		task				object containing task data
+	 * @param {string} 		task.id 			unique ID for task
+	 * @param {string} 		task.title 			task title
+	 * @param {string} 		task.description 	task description
+	 * @param {number} 		task.subNum 		integer denoting the number of indents of the task
+	 * @param {string} 		task.parent 		taskId of parent
+	 * @param {string[]} 	task.children 		Array of taskIds of children
+	 */
+	constructor ({
+		id,
+		title='',
+		description='',
+		subNum=0,
+		parent=undefined,
+		children=[]
+	}) {
+		this.id = id;
+		this.title = title;
+		this.description = description;
+		this.subNum = subNum;
+		this.parent = parent;
+		this.children = children;
+	}
+}
+
 const testTaskData = new Map([
-	['test0', new Task('test0', 'a', '0')],
-	['test1', new Task('test1', 'b', '1')],
-	['test2', new Task('test2', 'c', '2')],
-	['test3', new Task('test3', 'd', '3')]
+	['test0', new Task({id: 'test0', title: 'a', description: '0'})],
+	['test1', new Task({id: 'test1', title: 'b', description: '1'})],
+	['test2', new Task({id: 'test2', title: 'c', description: '2'})],
+	['test3', new Task({id: 'test3', title: 'd', description: '3'})]
 ]);
 
 const testTaskList = ['test0', 'test1', 'test2', 'test3']
-
-/**
- * 
- * @param {string} id 
- * @param {string} title 
- * @param {string} description 
- * @param {number} subNum 
- * @param {string} parent taskId of parent
- * @param {string[]} children Array of taskIds of children
- */
-function Task(id, title='', description='', subNum=0, parent=undefined, children=[]) {
-	this.id = id
-    this.title = title;
-    this.description = description;
-	this.subNum = subNum
-	this.parent = parent;
-	this.children = children;
-}
 
 export default function TaskList() {
 	// TODO: idToTask, getTaskFromId?
@@ -40,7 +50,7 @@ export default function TaskList() {
 	// taskData = map mapping taskId to task data defined by Task object 
 	const [taskData, setTaskData] = useState(testTaskData);
 	const [idCounter, setIdCounter] = useState(0);
-	const [newTask, setNewTask] = useState(new Task('task' + idCounter));
+	const [newTask, setNewTask] = useState(new Task({id: 'task' + idCounter}));
 	const [selectedTaskId, setSelectedTaskId] = useState(null);
 
 	function handleNewTaskChange(e) {
@@ -57,8 +67,8 @@ export default function TaskList() {
 			return;
 		}
 		setTaskList([newTask.id].concat(taskList));
-		setTaskData(new Map(taskData.set(newTask.id, {...newTask})));
-		setNewTask(new Task(getNewTaskId()));
+		setTaskData(new Map(taskData.set(newTask.id, new Task({...newTask}))));
+		setNewTask(new Task({id: getNewTaskId()}));
 	}
 
 	function handleSelectTask(taskId) {
@@ -90,6 +100,7 @@ export default function TaskList() {
 	 * @returns {undefined} no value, returns control
 	 */
 	function convertToSubtask(taskId) {
+		console.log(taskData);
 		// TODO: optimization, store max subNum, only check all parents when previous subNum = max
 		const taskIx = taskList.indexOf(taskId);
 		const task = taskData.get(taskId);
