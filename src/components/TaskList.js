@@ -68,30 +68,39 @@ export default function TaskList() {
 		return 'task' + (idCounter + 1);
 	}
 
+	/**
+	 * Given a taskId, indent the task by 1 (if applicable). Updates taskList and related parent/children maps
+	 * 
+	 * @param {string} taskId unique ID for task to subtask
+	 * @returns {undefined} no value, returns control
+	 */
 	function convertToSubtask(taskId) {
 		// TODO: optimization, store max subNum, only check all parents when previous subNum = max
 		const taskIx = taskList.findIndex((t) => t.id === taskId)
 		const task = taskList[taskIx];
 		if (taskIx > 0) { // Cannot make subtask of first task in list
-			// Search backwards from taskIx for the first "parent" task that has an equal subNum
+			// Get index of old parent, new parent, and task's index in old parent's children
 			const oldParentTaskId = toParentMap.get(taskId);
 			let newParentTaskId;
 			let childIx;
-			if (oldParentTaskId !== undefined) { 	// If task has parentId, it's already a subtask
-				// Can only subtask if parent has a child to the left of task (to become task's new parent)
+			// If task has parentId, it's already a subtask
+			if (oldParentTaskId !== undefined) { 	
+				// New parent is the child left of task in old parent's children, if it exists
 				childIx = toChildrenMap.get(oldParentTaskId).indexOf(taskId);
 				if (childIx === 0) {
 					return;
 				} else {
 					newParentTaskId = toChildrenMap.get(oldParentTaskId)[childIx - 1];
 				}
-			} else { 						// Else, task is a root (subNum=0), so parent is next root above
+			} 
+			// Else, task is a root (subNum=0), so parent is next root above
+			else {
 				newParentTaskId = [...taskList].slice(0, taskIx).reverse().find((t) => t.subNum === 0).id;
 				// If task.subNum = 0 and taskIx != 0, free to subtask
 			}
 
-			const tempToChildrenMap = new Map(toChildrenMap);
 			// Adjust children of old parent
+			const tempToChildrenMap = new Map(toChildrenMap);
 			if (oldParentTaskId !== undefined) {
 				const oldChildren = toChildrenMap.get(oldParentTaskId)
 				tempToChildrenMap.set(oldParentTaskId, oldChildren.slice(0, childIx).concat(oldChildren.slice(childIx + 1)));
@@ -136,18 +145,26 @@ export default function TaskList() {
 				subNum: task.subNum + 1
 			}
 			tempToParentMap.set(taskId, newParentTaskId);
+			tempToChildrenMap.delete(taskId); // Delete children after subtasking 
 			// Adjust parent of children of task
 			if (toChildrenMap.get(taskId) !== undefined) {
 				toChildrenMap.get(taskId).forEach((childId) => {
 					tempToParentMap.set(childId, newParentTaskId);
 				});
 			}
-			tempToChildrenMap.delete(taskId); // Delete children after subtasking 
 			// TODO: update idToTask too
 
 			setToChildrenMap(tempToChildrenMap);
 			setToParentMap(tempToParentMap);
 			setTaskList(taskList.slice(0, taskIx).concat(newTask).concat(taskList.slice(taskIx + 1)));
+		}
+	}
+
+	function convertToSupertask(taskId) {
+		const taskIx = taskList.findIndex((t) => t.id === taskId)
+		const task = taskList[taskIx];
+		if (task.subNum > 0 && taskIx > 0) { // Cannot convert to supertask if unindented or is first task
+
 		}
 	}
 
