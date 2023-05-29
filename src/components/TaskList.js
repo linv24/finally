@@ -4,6 +4,13 @@ import TaskInput from "./TaskInput";
 import TaskItem from "./TaskItem";
 import "../App.css"
 
+const testTasks = [
+	new Task('test1'),
+	new Task('test2'),
+	new Task('test3'),
+	new Task('test4')
+]
+
 function Task(id, title="", description="", subNum=0, parentId=null) {
 	this.id = id
     this.title = title;
@@ -17,13 +24,13 @@ export default function TaskList() {
 	document.addEventListener("keydown", handleKeyDown);
 	// idToTask maps taskId to Task object
 	const idToTask = new Map();
-	// subtaskTreeMap maps parentTaskId to Array<subtaskId>. Task only in subtaskTreeMap if it has children
-	const subtaskTreeMap = new Map();
 
-    const [taskList, setTaskList] = useImmer([]);
+    const [taskList, setTaskList] = useImmer(testTasks);
 	const [idCounter, setIdCounter] = useImmer(0);
 	const [newTask, setNewTask] = useImmer(new Task("task" + idCounter));
 	const [selectedTaskId, setSelectedTaskId] = useImmer(null);
+	// subtaskTreeMap maps parentTaskId to Array<subtaskId>. Task only in subtaskTreeMap if it has children
+	const [subtaskTreeMap, setSubtaskTreeMap] = useImmer(new Map());
 
 	function handleNewTaskChange(e) {
 		e.preventDefault();
@@ -70,11 +77,11 @@ export default function TaskList() {
 			let childIx;
 			if (task.parentId !== null) { 	// If task has parentId, it's already a subtask
 				// Can only subtask if parent has a child to the left of task (to become task's new parent)
-				childIx = subtaskTreeMap[task.parentId].findIndex(taskId);
+				childIx = subtaskTreeMap.get(task.parentId).findIndex(taskId);
 				if (childIx === 0) {
 					return;
 				} else {
-					newParentTaskId = subtaskTreeMap[task.parentId][childIx - 1];
+					newParentTaskId = subtaskTreeMap.get(task.parentId)[childIx - 1];
 				}
 			} else { 						// Else, task is a root (subNum=0), so parent is next root above
 				newParentTaskId = [...taskList].slice(0, taskIx).reverse().find((t) => t.subNum === 0).id;
@@ -83,12 +90,12 @@ export default function TaskList() {
 
 			// Adjust children of old parent
 			if (task.parentId !== null) {
-				const oldChildren = subtaskTreeMap[task.parentId]
-				subtaskTreeMap[task.parentId] = oldChildren.slice(0, childIx) + oldChildren.slice(childIx + 1);
+				const oldChildren = subtaskTreeMap.get(task.parentId)
+				subtaskTreeMap.set(task.parentId, oldChildren.slice(0, childIx) + oldChildren.slice(childIx + 1));
 			}
 			// Adjust children of new parent
 			if (subtaskTreeMap.has(newParentTaskId)) {
-				const newChildren = subtaskTreeMap[newParentTaskId];
+				const newChildren = subtaskTreeMap.get(newParentTaskId);
 				// Find index at which to insert task in children
 				let insertIx = newChildren.length;
 				for (const child of newChildren) {
@@ -97,12 +104,13 @@ export default function TaskList() {
 						break;
 					}
 				}
-				subtaskTreeMap[newParentTaskId] = newChildren.slice(0, insertIx) + [taskId] + newChildren.slice(insertIx);
+				subtaskTreeMap.set(newParentTaskId, newChildren.slice(0, insertIx) + [taskId] + newChildren.slice(insertIx));
 			} else {
-				subtaskTreeMap[newParentTaskId] = [taskId];
+				subtaskTreeMap.set(newParentTaskId, taskId);
 			}
+			setSubtaskTreeMap(subtaskTreeMap);
 
-			const newChildren = subtaskTreeMap[newParentTaskId];
+			const newChildren = subtaskTreeMap.get(newParentTaskId);
 			let insertIx = newChildren.length;
 			for (const child of newChildren) {
 				if (taskList.findIndex((t) => t.id === child.id) > taskIx) {
@@ -118,6 +126,8 @@ export default function TaskList() {
 			// TODO: update idToTask too
 
 			setTaskList(taskList.slice(0, taskIx).concat(newTask).concat(taskList.slice(taskIx + 1)));
+
+			console.log(subtaskTreeMap);
 		}
 	}
 
