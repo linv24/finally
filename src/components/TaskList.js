@@ -2,6 +2,7 @@ import { Fragment, useState } from 'react';
 import TaskInput from './TaskInput';
 import TaskItem from './TaskItem';
 import '../App.css'
+// TODO add assertions
 
 const testTasks = [
 	new Task('test1', 'a', '1'),
@@ -99,11 +100,12 @@ export default function TaskList() {
 				// If task.subNum = 0 and taskIx != 0, free to subtask
 			}
 
+			const newToChildrenMap = new Map(toChildrenMap);
+			const newToParentMap = new Map(toParentMap);
 			// Adjust children of old parent
-			const tempToChildrenMap = new Map(toChildrenMap);
 			if (oldParentTaskId !== undefined) {
 				const oldChildren = toChildrenMap.get(oldParentTaskId)
-				tempToChildrenMap.set(oldParentTaskId, oldChildren.slice(0, childIx).concat(oldChildren.slice(childIx + 1)));
+				newToChildrenMap.set(oldParentTaskId, oldChildren.slice(0, childIx).concat(oldChildren.slice(childIx + 1)));
 			}
 			// Adjust children of new parent
 			if (toChildrenMap.has(newParentTaskId)) {
@@ -123,15 +125,15 @@ export default function TaskList() {
 				} else {
 					taskPlusChildren = [taskId]
 				}
-				tempToChildrenMap.set(newParentTaskId, 
+				newToChildrenMap.set(newParentTaskId, 
 					newChildren.slice(0, insertIx)
 							   .concat(taskPlusChildren)
 							   .concat(newChildren.slice(insertIx)));
 			} else {
-				tempToChildrenMap.set(newParentTaskId, [taskId]);
+				newToChildrenMap.set(newParentTaskId, [taskId]);
 			}
 
-			const newChildren = tempToChildrenMap.get(newParentTaskId);
+			const newChildren = newToChildrenMap.get(newParentTaskId);
 			let insertIx = newChildren.length;
 			for (const child of newChildren) {
 				if (taskList.findIndex((t) => t.id === child.id) > taskIx) {
@@ -139,23 +141,22 @@ export default function TaskList() {
 				}
 			}
 			// Adjust parent, subNum, and children of task
-			const tempToParentMap = new Map(toParentMap);
 			const newTask = {
 				...task,
 				subNum: task.subNum + 1
 			}
-			tempToParentMap.set(taskId, newParentTaskId);
-			tempToChildrenMap.delete(taskId); // Delete children after subtasking 
+			newToParentMap.set(taskId, newParentTaskId);
+			newToChildrenMap.delete(taskId); // Delete children after subtasking 
 			// Adjust parent of children of task
 			if (toChildrenMap.get(taskId) !== undefined) {
 				toChildrenMap.get(taskId).forEach((childId) => {
-					tempToParentMap.set(childId, newParentTaskId);
+					newToParentMap.set(childId, newParentTaskId);
 				});
 			}
 			// TODO: update idToTask too
 
-			setToChildrenMap(tempToChildrenMap);
-			setToParentMap(tempToParentMap);
+			setToChildrenMap(newToChildrenMap);
+			setToParentMap(newToParentMap);
 			setTaskList(taskList.slice(0, taskIx).concat(newTask).concat(taskList.slice(taskIx + 1)));
 		}
 	}
@@ -163,8 +164,61 @@ export default function TaskList() {
 	function convertToSupertask(taskId) {
 		const taskIx = taskList.findIndex((t) => t.id === taskId)
 		const task = taskList[taskIx];
-		if (task.subNum > 0 && taskIx > 0) { // Cannot convert to supertask if unindented or is first task
+		if (toParentMap.has(taskId) && taskIx > 0) { // Cannot convert to supertask if unindented or is first task
+			// Get index of old parent, new parent, and task's index in old parent's children
+			const oldParentTaskId = toParentMap.get(taskId);
+			// new parent = parent of parent of task
+			const newParentTaskId = taskList.find((t) => t.id === toParentMap.get(taskId)).id; 
 
+			const newToChildrenMap = new Map(toChildrenMap);
+			const newToParentMap = new Map(toParentMap);
+			// Adjust children of old parent
+			const oldChildren = newToChildrenMap.get(oldParentTaskId);
+			const oldChildIx = oldChildren.indexOf(taskId);
+			newToChildrenMap.set(oldParentTaskId, 
+				oldChildren.slice(0, oldChildIx)
+						   .concat(oldChildren.slice(oldChildIx + 1))
+			);
+			// Adjust children of new parent
+			// If newParent != undefined, then adjust newParent's children accordingly
+			if (newParentTaskId !== undefined) {
+				// Find index at which to insert task in children
+				const newChildren = toChildrenMap.get(newParentTaskId);
+				let insertIx = newChildren.length;
+				for (const child of newChildren) {
+					if (taskList.findIndex((t) => t.id === child.id) > taskIx) {
+						insertIx = newChildren.findIndex(child.id);
+						break;
+					}
+				}
+				// Concat current task's children to new parent
+				let taskPlusChildren;
+				if (toChildrenMap.has(taskId)) {
+					taskPlusChildren = [taskId].concat(toChildrenMap.get(taskId));
+				} else {
+					taskPlusChildren = [taskId]
+				}
+				newToChildrenMap.set(newParentTaskId, 
+					newChildren.slice(0, insertIx)
+							   .concat(taskPlusChildren)
+							   .concat(newChildren.slice(insertIx)));
+			}
+			// Else, oldParent is a root task, task should also be a root, and there is no new parent to update
+			// Adjust subNum, parent, and children of task
+			const newTask = {
+				...task,
+				subNum: task.subNum - 1
+			}
+			if (newParentTaskId !== undefined) {
+				newToParentMap.set(taskId, newParentTaskId);
+			} else {
+				newToParentMap.delete(taskId);
+			}
+			// Recursively decrement subNum of task's children
+			// TODO
+
+			setToChildrenMap(newToChildrenMap);
+			setToParentMap(newToParentMap);
 		}
 	}
 
