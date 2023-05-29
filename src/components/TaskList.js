@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import TaskInput from './TaskInput';
 import TaskItem from './TaskItem';
 import '../App.css'
@@ -43,7 +43,12 @@ const testTaskList = ['test0', 'test1', 'test2', 'test3']
 
 export default function TaskList() {
 	// TODO: idToTask, getTaskFromId?
-	document.addEventListener('keydown', handleKeyDown);
+	useEffect(() => {
+		document.addEventListener('keydown', handleKeyDown);
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+		}
+	});
 
 	// taskList = array of task IDs
     const [taskList, setTaskList] = useState(testTaskList);
@@ -51,7 +56,7 @@ export default function TaskList() {
 	const [taskData, setTaskData] = useState(testTaskData);
 	const [idCounter, setIdCounter] = useState(0);
 	const [newTask, setNewTask] = useState(new Task({id: 'task' + idCounter}));
-	const [selectedTaskId, setSelectedTaskId] = useState(null);
+	const [selectedTaskId, setSelectedTaskId] = useState(undefined);
 
 	function handleNewTaskChange(e) {
 		e.preventDefault();
@@ -76,11 +81,17 @@ export default function TaskList() {
 	}
 
 	function handleKeyDown(e) {
-		// console.log('keydown', selectedTaskId)
-		// if (e.key === 'ArrowRight' && (selectedTaskId !== null)) {
-		// 	console.log('selected', selectedTaskId)
-		// 	convertToSubtask(selectedTaskId)
-		// }
+		console.log('keydown', e.key);
+		if (selectedTaskId !== undefined) {
+			switch (e.key) {
+				case 'ArrowRight': convertToSubtask(selectedTaskId); 
+					console.log('sub', selectedTaskId);
+					break;
+				case 'ArrowLeft': convertToSupertask(selectedTaskId); 
+					console.log('super', selectedTaskId);	
+					break;
+			}
+		}
 	}
 
 	/**
@@ -100,7 +111,6 @@ export default function TaskList() {
 	 * @returns {undefined} no value, returns control
 	 */
 	function convertToSubtask(taskId) {
-		console.log(taskData);
 		// TODO: optimization, store max subNum, only check all parents when previous subNum = max
 		const taskIx = taskList.indexOf(taskId);
 		const task = taskData.get(taskId);
