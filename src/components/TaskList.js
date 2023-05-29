@@ -148,8 +148,6 @@ export default function TaskList() {
 			setToChildrenMap(tempToChildrenMap);
 			setToParentMap(tempToParentMap);
 			setTaskList(taskList.slice(0, taskIx).concat(newTask).concat(taskList.slice(taskIx + 1)));
-
-			console.log(tempToChildrenMap);
 		}
 	}
 
