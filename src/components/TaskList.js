@@ -45,8 +45,10 @@ export default function TaskList() {
 	// TODO: idToTask, getTaskFromId?
 	useEffect(() => {
 		document.addEventListener('keydown', handleKeyDown);
+		document.addEventListener('click', handleClick);
 		return () => {
 			document.removeEventListener('keydown', handleKeyDown);
+			document.removeEventListener('click', handleClick);
 		}
 	});
 
@@ -57,6 +59,12 @@ export default function TaskList() {
 	const [idCounter, setIdCounter] = useState(0);
 	const [newTask, setNewTask] = useState(new Task({id: 'task' + idCounter}));
 	const [selectedTaskId, setSelectedTaskId] = useState(undefined);
+
+	function handleClick(e) {
+		if (e.target.className.indexOf('selectedTask') === -1) {
+			setSelectedTaskId(undefined);
+		}
+	}
 
 	function handleNewTaskChange(e) {
 		e.preventDefault();
