@@ -1,4 +1,4 @@
-export default function TaskItem({ task, handleSelectTask, convertToSubtask, taskData }) {
+export default function TaskItem({ task, handleSelectTask, convertToSubtask, convertToSupertask }) {
     const tabMarginPx = 20;
 
     return (
@@ -11,6 +11,7 @@ export default function TaskItem({ task, handleSelectTask, convertToSubtask, tas
                 <p className="taskDescription">{task.description}</p>
             </div>
             <button type="button" onClick={(e) => convertToSubtask(task.id)}>sub</button>
+            <button type="button" onClick={(e) => convertToSupertask(task.id)}>super</button>
             <span className="spanTest">
                 id = {task.id}, 
                 subNum = {task.subNum}, 
