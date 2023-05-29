@@ -28,6 +28,10 @@
   padding: 5px;
 }
 
+.selectedTask {
+  background-color: lightgray;
+}
+
 .taskItem:hover {
   background-color: lightgray;
 }

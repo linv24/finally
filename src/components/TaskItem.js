@@ -1,8 +1,8 @@
-export default function TaskItem({ task, handleSelectTask, convertToSubtask, convertToSupertask }) {
+export default function TaskItem({ task, selectedTaskId, handleSelectTask, convertToSubtask, convertToSupertask }) {
     const tabMarginPx = 20;
 
     return (
-        <li className="taskItem" 
+        <li className={"taskItem " + (selectedTaskId === task.id ? "selectedTask" : "")}
             onClick={(e) => handleSelectTask(task.id)} 
             style={{marginLeft: (task.subNum * tabMarginPx) + "px"}}>
             <input className="taskItemCheckbox" type="checkbox" />

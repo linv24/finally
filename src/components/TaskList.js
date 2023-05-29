@@ -229,6 +229,7 @@ export default function TaskList() {
 					<Fragment key={taskId}>
 						<TaskItem 
 							task={taskData.get(taskId)}
+							selectedTaskId={selectedTaskId}
 							handleSelectTask={handleSelectTask}
 							convertToSubtask={convertToSubtask}
 							convertToSupertask={convertToSupertask} />
