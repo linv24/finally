@@ -18,10 +18,8 @@ function Task(id, title='', description='', subNum=0) {
 }
 
 export default function TaskList() {
-	// TODO: idToTask, getTaskFromId
+	// TODO: idToTask, getTaskFromId?
 	document.addEventListener('keydown', handleKeyDown);
-	// idToTask maps taskId to Task object
-	const idToTask = new Map();
 
     const [taskList, setTaskList] = useState(testTasks);
 	const [idCounter, setIdCounter] = useState(0);
@@ -68,10 +66,6 @@ export default function TaskList() {
 	function getNewTaskId() {
 		setIdCounter(idCounter + 1);
 		return 'task' + (idCounter + 1);
-	}
-
-	function getTaskById(taskId) {
-		return taskList.find((t) => t.id === taskId);
 	}
 
 	function convertToSubtask(taskId) {
