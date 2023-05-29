@@ -83,8 +83,28 @@ export default function TaskList() {
 	function handleKeyDown(e) {
 		if (selectedTaskId !== undefined) {
 			switch (e.key) {
-				case 'ArrowRight': convertToSubtask(selectedTaskId); break;
-				case 'ArrowLeft': convertToSupertask(selectedTaskId); break;
+				case 'ArrowRight': {
+					convertToSubtask(selectedTaskId); 
+					break;
+				}
+				case 'ArrowLeft': {
+					convertToSupertask(selectedTaskId); 
+					break;
+				}
+				case 'ArrowUp': {
+					const selectedIx = taskList.indexOf(selectedTaskId);
+					if (selectedIx > 0) {
+						handleSelectTask(taskList[selectedIx - 1]); 
+					}
+					break;
+				}
+				case 'ArrowDown': {
+					const selectedIx = taskList.indexOf(selectedTaskId);
+					if (selectedIx < taskList.length - 1) {
+						handleSelectTask(taskList[selectedIx + 1]); 
+					}
+					break;
+				}
 			}
 		}
 	}
