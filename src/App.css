@@ -50,3 +50,8 @@
   display: flex;
   flex-direction: column;
 }
+
+.spanTest {
+  font-size: 12px;
+  padding-left: 10px
+}

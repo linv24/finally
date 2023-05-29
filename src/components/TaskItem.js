@@ -1,4 +1,4 @@
-export default function TaskItem({ task, handleSelectTask, convertToSubtask }) {
+export default function TaskItem({ task, handleSelectTask, convertToSubtask, toChildrenMap, toParentMap }) {
     return (
         <li className="taskItem" onClick={(e) => handleSelectTask(task.id)}>
             <input className="taskItemCheckbox" type="checkbox" />
@@ -7,8 +7,8 @@ export default function TaskItem({ task, handleSelectTask, convertToSubtask }) {
                 <p className="taskDescription">{task.description}</p>
             </div>
             <button type="button" onClick={(e) => convertToSubtask(task.id)}>sub</button>
-            <span>
-                id = {task.id}, subNum = {task.subNum}, parent = {task.parentId}
+            <span className="spanTest">
+                id = {task.id}, subNum = {task.subNum}, parent = {toParentMap.get(task.id)}, children = {toChildrenMap.get(task.id)}
             </span>
         </li>
     )

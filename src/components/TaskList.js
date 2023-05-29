@@ -1,5 +1,4 @@
-import { Fragment } from "react";
-import { useImmer } from "use-immer";
+import { Fragment, useState } from "react";
 import TaskInput from "./TaskInput";
 import TaskItem from "./TaskItem";
 import "../App.css"
@@ -11,12 +10,11 @@ const testTasks = [
 	new Task('test4')
 ]
 
-function Task(id, title="", description="", subNum=0, parentId=null) {
+function Task(id, title="", description="", subNum=0) {
 	this.id = id
     this.title = title;
     this.description = description;
 	this.subNum = subNum
-	this.parentId = parentId;
 }
 
 export default function TaskList() {
@@ -25,12 +23,13 @@ export default function TaskList() {
 	// idToTask maps taskId to Task object
 	const idToTask = new Map();
 
-    const [taskList, setTaskList] = useImmer(testTasks);
-	const [idCounter, setIdCounter] = useImmer(0);
-	const [newTask, setNewTask] = useImmer(new Task("task" + idCounter));
-	const [selectedTaskId, setSelectedTaskId] = useImmer(null);
-	// subtaskTreeMap maps parentTaskId to Array<subtaskId>. Task only in subtaskTreeMap if it has children
-	const [subtaskTreeMap, setSubtaskTreeMap] = useImmer(new Map());
+    const [taskList, setTaskList] = useState(testTasks);
+	const [idCounter, setIdCounter] = useState(0);
+	const [newTask, setNewTask] = useState(new Task("task" + idCounter));
+	const [selectedTaskId, setSelectedTaskId] = useState(null);
+	// toChildrenMap maps parentTaskId to Array<subtaskId>. Task only in toChildrenMap if it has children
+	const [toChildrenMap, setToChildrenMap] = useState(new Map());
+	const [toParentMap, setToParentMap] = useState(new Map());
 
 	function handleNewTaskChange(e) {
 		e.preventDefault();
@@ -51,7 +50,6 @@ export default function TaskList() {
 	}
 
 	function handleSelectTask(taskId) {
-		console.log(taskId)
 		setSelectedTaskId(taskId);
 	}
 
@@ -73,29 +71,31 @@ export default function TaskList() {
 		const task = taskList[taskIx];
 		if (taskIx > 0) { // Cannot make subtask of first task in list
 			// Search backwards from taskIx for the first "parent" task that has an equal subNum
+			const oldParentTaskId = toParentMap.get(taskId);
 			let newParentTaskId;
 			let childIx;
-			if (task.parentId !== null) { 	// If task has parentId, it's already a subtask
+			if (oldParentTaskId !== undefined) { 	// If task has parentId, it's already a subtask
 				// Can only subtask if parent has a child to the left of task (to become task's new parent)
-				childIx = subtaskTreeMap.get(task.parentId).findIndex(taskId);
+				childIx = toChildrenMap.get(oldParentTaskId).indexOf(taskId);
 				if (childIx === 0) {
 					return;
 				} else {
-					newParentTaskId = subtaskTreeMap.get(task.parentId)[childIx - 1];
+					newParentTaskId = toChildrenMap.get(oldParentTaskId)[childIx - 1];
 				}
 			} else { 						// Else, task is a root (subNum=0), so parent is next root above
 				newParentTaskId = [...taskList].slice(0, taskIx).reverse().find((t) => t.subNum === 0).id;
 				// If task.subNum = 0 and taskIx != 0, free to subtask
 			}
 
+			const tempToChildrenMap = new Map(toChildrenMap);
 			// Adjust children of old parent
-			if (task.parentId !== null) {
-				const oldChildren = subtaskTreeMap.get(task.parentId)
-				subtaskTreeMap.set(task.parentId, oldChildren.slice(0, childIx) + oldChildren.slice(childIx + 1));
+			if (oldParentTaskId !== undefined) {
+				const oldChildren = toChildrenMap.get(oldParentTaskId)
+				tempToChildrenMap.set(oldParentTaskId, oldChildren.slice(0, childIx).concat(oldChildren.slice(childIx + 1)));
 			}
 			// Adjust children of new parent
-			if (subtaskTreeMap.has(newParentTaskId)) {
-				const newChildren = subtaskTreeMap.get(newParentTaskId);
+			if (toChildrenMap.has(newParentTaskId)) {
+				const newChildren = toChildrenMap.get(newParentTaskId);
 				// Find index at which to insert task in children
 				let insertIx = newChildren.length;
 				for (const child of newChildren) {
@@ -104,30 +104,49 @@ export default function TaskList() {
 						break;
 					}
 				}
-				subtaskTreeMap.set(newParentTaskId, newChildren.slice(0, insertIx) + [taskId] + newChildren.slice(insertIx));
+				// Concat current task's children to new parent
+				let taskPlusChildren;
+				if (toChildrenMap.has(taskId)) {
+					taskPlusChildren = [taskId].concat(toChildrenMap.get(taskId));
+				} else {
+					taskPlusChildren = [taskId]
+				}
+				tempToChildrenMap.set(newParentTaskId, 
+					newChildren.slice(0, insertIx)
+							   .concat(taskPlusChildren)
+							   .concat(newChildren.slice(insertIx)));
 			} else {
-				subtaskTreeMap.set(newParentTaskId, taskId);
+				tempToChildrenMap.set(newParentTaskId, [taskId]);
 			}
-			setSubtaskTreeMap(subtaskTreeMap);
 
-			const newChildren = subtaskTreeMap.get(newParentTaskId);
+			const newChildren = tempToChildrenMap.get(newParentTaskId);
 			let insertIx = newChildren.length;
 			for (const child of newChildren) {
 				if (taskList.findIndex((t) => t.id === child.id) > taskIx) {
 					insertIx = newChildren.findIndex(child.id);
 				}
 			}
-			// Adjust parent and subNum of task
+			// Adjust parent, subNum, and children of task
+			const tempToParentMap = new Map(toParentMap);
 			const newTask = {
 				...task,
-				parentId: newParentTaskId,
 				subNum: task.subNum + 1
 			}
+			tempToParentMap.set(taskId, newParentTaskId);
+			// Adjust parent of children of task
+			if (toChildrenMap.get(taskId) !== undefined) {
+				toChildrenMap.get(taskId).forEach((childId) => {
+					tempToParentMap.set(childId, newParentTaskId);
+				});
+			}
+			tempToChildrenMap.delete(taskId); // Delete children after subtasking 
 			// TODO: update idToTask too
 
+			setToChildrenMap(tempToChildrenMap);
+			setToParentMap(tempToParentMap);
 			setTaskList(taskList.slice(0, taskIx).concat(newTask).concat(taskList.slice(taskIx + 1)));
 
-			console.log(subtaskTreeMap);
+			console.log(tempToChildrenMap);
 		}
 	}
 
@@ -143,7 +162,9 @@ export default function TaskList() {
 						<TaskItem 
 							task={task}
 							handleSelectTask={handleSelectTask}
-							convertToSubtask={convertToSubtask} />
+							convertToSubtask={convertToSubtask} 
+							toChildrenMap={toChildrenMap}
+							toParentMap={toParentMap} />
 					</Fragment>))}
             </ul>
         </div>
