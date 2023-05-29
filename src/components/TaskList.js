@@ -1,16 +1,16 @@
-import { Fragment, useState } from "react";
-import TaskInput from "./TaskInput";
-import TaskItem from "./TaskItem";
-import "../App.css"
+import { Fragment, useState } from 'react';
+import TaskInput from './TaskInput';
+import TaskItem from './TaskItem';
+import '../App.css'
 
 const testTasks = [
-	new Task('test1'),
-	new Task('test2'),
-	new Task('test3'),
-	new Task('test4')
+	new Task('test1', 'a', '1'),
+	new Task('test2', 'b', '2'),
+	new Task('test3', 'c', '3'),
+	new Task('test4', 'd', '4')
 ]
 
-function Task(id, title="", description="", subNum=0) {
+function Task(id, title='', description='', subNum=0) {
 	this.id = id
     this.title = title;
     this.description = description;
@@ -18,14 +18,14 @@ function Task(id, title="", description="", subNum=0) {
 }
 
 export default function TaskList() {
-	// TODO: idToTask, getNewTaskId()
-	document.addEventListener("keydown", handleKeyDown);
+	// TODO: idToTask, getTaskFromId
+	document.addEventListener('keydown', handleKeyDown);
 	// idToTask maps taskId to Task object
 	const idToTask = new Map();
 
     const [taskList, setTaskList] = useState(testTasks);
 	const [idCounter, setIdCounter] = useState(0);
-	const [newTask, setNewTask] = useState(new Task("task" + idCounter));
+	const [newTask, setNewTask] = useState(new Task('task' + idCounter));
 	const [selectedTaskId, setSelectedTaskId] = useState(null);
 	// toChildrenMap maps parentTaskId to Array<subtaskId>. Task only in toChildrenMap if it has children
 	const [toChildrenMap, setToChildrenMap] = useState(new Map());
@@ -45,8 +45,7 @@ export default function TaskList() {
 			return;
 		}
 		setTaskList([newTask].concat(taskList))
-		setNewTask(new Task("task" + (idCounter + 1)));
-		setIdCounter(idCounter + 1);
+		setNewTask(new Task(getNewTaskId()));
 	}
 
 	function handleSelectTask(taskId) {
@@ -55,10 +54,20 @@ export default function TaskList() {
 
 	function handleKeyDown(e) {
 		// console.log('keydown', selectedTaskId)
-		// if (e.key === "ArrowRight" && (selectedTaskId !== null)) {
+		// if (e.key === 'ArrowRight' && (selectedTaskId !== null)) {
 		// 	console.log('selected', selectedTaskId)
 		// 	convertToSubtask(selectedTaskId)
 		// }
+	}
+
+	/**
+	 * Increments task counter and returns a formatted task ID
+	 * 
+	 * @returns {string} formatted taskId with incremented counter
+	 */
+	function getNewTaskId() {
+		setIdCounter(idCounter + 1);
+		return 'task' + (idCounter + 1);
 	}
 
 	function getTaskById(taskId) {
