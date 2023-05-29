@@ -1,4 +1,4 @@
-export default function TaskItem({ task, handleSelectTask, convertToSubtask, toChildrenMap, toParentMap }) {
+export default function TaskItem({ task, handleSelectTask, convertToSubtask, taskData }) {
     const tabMarginPx = 20;
 
     return (
@@ -14,8 +14,8 @@ export default function TaskItem({ task, handleSelectTask, convertToSubtask, toC
             <span className="spanTest">
                 id = {task.id}, 
                 subNum = {task.subNum}, 
-                parent = {toParentMap.get(task.id)}, 
-                children = {toChildrenMap.get(task.id)}
+                parent = {task.parent}, 
+                children = {task.children}
             </span>
         </li>
     )
