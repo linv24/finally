@@ -19,6 +19,11 @@
   padding-left: 0px;
 }
 
+.taskListBelow {
+  height: 100px; /* TODO proper height */
+  background-color: red;
+}
+
 .taskItem {
   border: 2px solid lightslategray;
   border-radius: 5px;

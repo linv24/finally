@@ -66,6 +66,10 @@ export default function TaskList() {
 		}
 	}
 
+	function handleDrag(e) {
+		e.stopPropagation();
+	}
+
 	function handleNewTaskChange(e) {
 		e.preventDefault();
 		setNewTask({
@@ -269,9 +273,13 @@ export default function TaskList() {
 							selectedTaskId={selectedTaskId}
 							handleSelectTask={handleSelectTask}
 							convertToSubtask={convertToSubtask}
-							convertToSupertask={convertToSupertask} />
+							convertToSupertask={convertToSupertask}
+							handleDrag={handleDrag} />
 					</Fragment>))}
             </ul>
+			<div className="taskListBelow">
+				
+			</div>
         </div>
     );
 }
