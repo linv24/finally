@@ -1,12 +1,12 @@
 import { Fragment, useState, useEffect } from 'react';
 import TaskInput from './TaskInput';
 import TaskItem from './TaskItem';
-import '../App.css'
+import './TaskList.css'
 // TODO add assertions
 
 class Task {
 	/**
-	 * 
+	 *
 	 * @param {Object} 		task				object containing task data
 	 * @param {string} 		task.id 			unique ID for task
 	 * @param {string} 		task.title 			task title
@@ -54,7 +54,7 @@ export default function TaskList() {
 
 	// taskList = array of task IDs
     const [taskList, setTaskList] = useState(testTaskList);
-	// taskData = map mapping taskId to task data defined by Task object 
+	// taskData = map mapping taskId to task data defined by Task object
 	const [taskData, setTaskData] = useState(testTaskData);
 	const [idCounter, setIdCounter] = useState(0);
 	const [newTask, setNewTask] = useState(new Task({id: 'task' + idCounter}));
@@ -96,34 +96,36 @@ export default function TaskList() {
 		if (selectedTaskId !== undefined) {
 			switch (e.key) {
 				case 'ArrowRight': {
-					convertToSubtask(selectedTaskId); 
+					convertToSubtask(selectedTaskId);
 					break;
 				}
 				case 'ArrowLeft': {
-					convertToSupertask(selectedTaskId); 
+					convertToSupertask(selectedTaskId);
 					break;
 				}
 				case 'ArrowUp': {
 					const selectedIx = taskList.indexOf(selectedTaskId);
 					if (selectedIx > 0) {
-						handleSelectTask(taskList[selectedIx - 1]); 
+						handleSelectTask(taskList[selectedIx - 1]);
 					}
 					break;
 				}
 				case 'ArrowDown': {
 					const selectedIx = taskList.indexOf(selectedTaskId);
 					if (selectedIx < taskList.length - 1) {
-						handleSelectTask(taskList[selectedIx + 1]); 
+						handleSelectTask(taskList[selectedIx + 1]);
 					}
 					break;
 				}
+				default:
+					break;
 			}
 		}
 	}
 
 	/**
 	 * Increments task counter and returns a formatted task ID
-	 * 
+	 *
 	 * @returns {string} formatted taskId with incremented counter
 	 */
 	function getNewTaskId() {
@@ -133,7 +135,7 @@ export default function TaskList() {
 
 	/**
 	 * Given a taskId, indent the task by 1 (if applicable). Updates taskList and related parent/children maps
-	 * 
+	 *
 	 * @param {string} taskId unique ID for task to subtask
 	 * @returns {undefined} no value, returns control
 	 */
@@ -147,7 +149,7 @@ export default function TaskList() {
 			let newParentTaskId;
 			let childIx;
 			// If task has parentId, it's already a subtask
-			if (oldParentTaskId !== undefined) { 	
+			if (oldParentTaskId !== undefined) {
 				// New parent is the child left of task in old parent's children, if it exists
 				childIx = taskData.get(oldParentTaskId).children.indexOf(taskId);
 				if (childIx === 0) {
@@ -155,7 +157,7 @@ export default function TaskList() {
 				} else {
 					newParentTaskId = taskData.get(oldParentTaskId).children[childIx - 1];
 				}
-			} 
+			}
 			// Else, task is a root (subNum=0), so parent is next root above
 			else {
 				newParentTaskId = [...taskList].slice(0, taskIx)
@@ -268,7 +270,7 @@ export default function TaskList() {
             <ul className="taskList">
                 {taskList.map((taskId) => (
 					<Fragment key={taskId}>
-						<TaskItem 
+						<TaskItem
 							task={taskData.get(taskId)}
 							selectedTaskId={selectedTaskId}
 							handleSelectTask={handleSelectTask}
@@ -278,7 +280,7 @@ export default function TaskList() {
 					</Fragment>))}
             </ul>
 			<div className="taskListBelow">
-				
+
 			</div>
         </div>
     );

@@ -2,6 +2,8 @@ import "../App.css";
 
 export default function Header() {
     return (
-        <h1 className="header">final.ly</h1>
+        <div className="headerContainer">
+            <h1 className="header">final.ly</h1>
+        </div>
     )
 }
