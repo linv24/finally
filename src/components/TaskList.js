@@ -72,10 +72,10 @@ export default function TaskList() {
 
 	function handleNewTaskChange(e) {
 		e.preventDefault();
-		setNewTask({
+		setNewTask(new Task ({
 			...newTask,
-			[e.target.name]: e.target.value
-		});
+			title: e.target.value
+		}));
 	}
 
 	function handleNewTaskSubmit(e) {

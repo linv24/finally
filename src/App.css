@@ -1,9 +1,20 @@
 :root {
   /* baby blue palette */
+  --white-1: #ffffff;
+  --gray-1: #f3f3f3;
+  --gray-2: #d1d1d1;
+  --gray-3: #c6c6c6;
+  --gray-4: #a3a3a3;
+  --blue-1: #f6f8fe;
+  --blue-2: #ecf1ff;
+  --blue-3: dodgerblue;
+
   --primary-light: aliceblue;
   --primary-dark: #cdcdcd;
   --secondary-light: lightskyblue;
   --secondary-dark: dodgerblue;
+
+  --font-body: normal normal normal normal 14px
 }
 
 html, body {
@@ -20,7 +31,7 @@ html, body {
 }
 
 .appContainer {
-  background-color: var(--primary-light);
+  background-color: var(--white-1);
   text-align: center;
   display: flex;
   flex-direction: column;

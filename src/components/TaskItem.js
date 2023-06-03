@@ -3,7 +3,7 @@ export default function TaskItem({ task, selectedTaskId, handleSelectTask, conve
 
     return (
         <li className={"taskItem " + (selectedTaskId === task.id ? "selectedTask" : "")}
-            onClick={(e) => handleSelectTask(task.id)} 
+            onClick={(e) => handleSelectTask(task.id)}
             style={{marginLeft: (task.subNum * tabMarginPx) + "px"}}
             draggable="true"
             onDrag={handleDrag}>
@@ -12,12 +12,12 @@ export default function TaskItem({ task, selectedTaskId, handleSelectTask, conve
                 <p className="taskTitle">{task.title}</p>
                 <p className="taskDescription">{task.description}</p>
             </div>
-            <span className="spanTest">
-                id = {task.id}, 
-                subNum = {task.subNum}, 
-                parent = {task.parent}, 
+            {/* <span className="spanTest">
+                id = {task.id},
+                subNum = {task.subNum},
+                parent = {task.parent},
                 children = {task.children}
-            </span>
+            </span> */}
         </li>
     )
 }

@@ -6,16 +6,10 @@ export default function TaskInput({ newTask, handleNewTaskChange, handleNewTaskS
             className="newTaskForm"
             onSubmit={handleNewTaskSubmit}>
             <input
-                className="title"
+                className="newTaskTitle"
                 type="text"
-                placeholder="Task title"
+                placeholder="Task"
                 value={newTask.title}
-                onChange={handleNewTaskChange} />
-            <input
-                className="description"
-                type="text"
-                placeholder="Task description"
-                value={newTask.description}
                 onChange={handleNewTaskChange} />
             <button type="submit" hidden></button>
         </form>
