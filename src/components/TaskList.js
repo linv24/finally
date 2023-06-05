@@ -94,6 +94,9 @@ export default function TaskList() {
 	}
 
 	function handleEditingTaskSelect(taskId, taskProp) {
+		if (taskId === undefined) {
+			setEditingTask(undefined);
+		}
 		setEditingTask({id: taskId, prop: taskProp});
 	}
 

@@ -13,13 +13,21 @@ export default function TaskItem({
             <input className="taskItemCheckbox" type="checkbox" />
             <div className="taskItemTextContainer">
                 {(editingTask !== undefined && editingTask.id === task.id ?
-                    <input
-                        className="taskTitle"
-                        type="text"
-                        value={task.title}
-                        onChange={(e) => handleEditingTaskChange(e, task.id, 'title')}
-                        autoFocus
-                        style={{width: task.title.length + 'ch'}} /> :
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleEditingTaskSelect(undefined, undefined);
+                        }}>
+                        <input
+                            className="taskTitle"
+                            type="text"
+                            value={task.title}
+                            onChange={(e) => handleEditingTaskChange(e, task.id, 'title')}
+                            autoFocus
+                            style={{width: task.title.length + 'ch'}} />
+                        <button type="submit" hidden></button>
+                    </form>
+                        :
                     <p className="taskTitle"
                         onClick={(e) => handleEditingTaskSelect(task.id, 'title')}>
                         {task.title}
