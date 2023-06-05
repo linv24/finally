@@ -1,4 +1,7 @@
-export default function TaskItem({ task, selectedTaskId, handleSelectTask, convertToSubtask, convertToSupertask, handleDrag }) {
+export default function TaskItem({
+    task, selectedTaskId, editingTask,
+    handleSelectTask, handleDrag, handleEditingTaskChange, handleEditingTaskSelect
+}) {
     const tabMarginPx = 20;
 
     return (
@@ -8,8 +11,20 @@ export default function TaskItem({ task, selectedTaskId, handleSelectTask, conve
             draggable="true"
             onDrag={handleDrag}>
             <input className="taskItemCheckbox" type="checkbox" />
-            <div className="taskItemText">
-                <p className="taskTitle">{task.title}</p>
+            <div className="taskItemTextContainer">
+                {(editingTask !== undefined && editingTask.id === task.id ?
+                    <input
+                        className="taskTitle"
+                        type="text"
+                        value={task.title}
+                        onChange={(e) => handleEditingTaskChange(e, task.id, 'title')}
+                        autoFocus
+                        style={{width: task.title.length + 'ch'}} /> :
+                    <p className="taskTitle"
+                        onClick={(e) => handleEditingTaskSelect(task.id, 'title')}>
+                        {task.title}
+                    </p>
+                )}
                 <p className="taskDescription">{task.description}</p>
             </div>
             {/* <span className="spanTest">

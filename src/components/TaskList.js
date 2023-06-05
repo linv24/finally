@@ -59,10 +59,15 @@ export default function TaskList() {
 	const [idCounter, setIdCounter] = useState(0);
 	const [newTask, setNewTask] = useState(new Task({id: 'task' + idCounter}));
 	const [selectedTaskId, setSelectedTaskId] = useState(undefined);
+	const [editingTask, setEditingTask] = useState(undefined);
 
 	function handleClick(e) {
 		if (e.target.className.indexOf('selectedTask') === -1) {
 			setSelectedTaskId(undefined);
+		}
+
+		if (e.target.className.indexOf('taskTitle') !== -1) {
+			// console.log(e.target)
 		}
 	}
 
@@ -86,6 +91,21 @@ export default function TaskList() {
 		setTaskList([newTask.id].concat(taskList));
 		setTaskData(new Map(taskData.set(newTask.id, new Task({...newTask}))));
 		setNewTask(new Task({id: getNewTaskId()}));
+	}
+
+	function handleEditingTaskSelect(taskId, taskProp) {
+		setEditingTask({id: taskId, prop: taskProp});
+	}
+
+	function handleEditingTaskChange(e, taskId, taskProp) {
+		const task = taskData.get(taskId);
+		switch (taskProp) {
+			case 'title':
+				task.title = e.target.value; break;
+			case 'description':
+				task.description = e.target.value; break;
+		}
+		setTaskData(new Map(taskData.set(taskId, task)));
 	}
 
 	function handleSelectTask(taskId) {
@@ -273,10 +293,12 @@ export default function TaskList() {
 						<TaskItem
 							task={taskData.get(taskId)}
 							selectedTaskId={selectedTaskId}
+							editingTask={editingTask}
+							// editingTask={{id: 'test0', prop: 'title'}}
 							handleSelectTask={handleSelectTask}
-							convertToSubtask={convertToSubtask}
-							convertToSupertask={convertToSupertask}
-							handleDrag={handleDrag} />
+							handleDrag={handleDrag}
+							handleEditingTaskChange={handleEditingTaskChange}
+							handleEditingTaskSelect={handleEditingTaskSelect} />
 					</Fragment>))}
             </ul>
 			<div className="taskListBelow">
