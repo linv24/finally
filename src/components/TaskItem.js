@@ -25,14 +25,15 @@ export default function TaskItem({
                             className="taskTitle"
                             type="text"
                             value={task.title}
+                            placeholder="Title"
                             onChange={(e) => handleEditingTaskChange(e, task.id, 'title')}
                             autoFocus
-                            style={{width: task.title.length + 'ch'}} />
+                            style={{width: (task.title.length > 0 ? task.title.length : 5) + 'ch'}} />
                         <button type="submit" hidden></button>
                     </form>
                         :
                     <p className="taskTitle"
-                        onClick={(e) => handleEditingTaskSelect(e, task.id, 'title')}>
+                        onClick={(e) => handleEditingTaskSelect(task.id, 'title')}>
                         {task.title}
                     </p>
                 )}
@@ -49,9 +50,10 @@ export default function TaskItem({
                             className="taskDescription"
                             type="text"
                             value={task.description}
+                            placeholder="Description"
                             onChange={(e) => handleEditingTaskChange(e, task.id, 'description')}
                             autoFocus
-                            style={{width: task.description.length + 'ch'}} />
+                            style={{width: (task.description.length > 0 ? task.description.length : 12) + 'ch'}} />
                         <button type="submit" hidden></button>
                     </form>
                         :

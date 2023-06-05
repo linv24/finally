@@ -34,7 +34,6 @@
 
 .taskListBelow {
   height: 100%;
-  background-color: red;
 }
 
 /* Task Item */
@@ -75,7 +74,6 @@ input.taskTitle {
   border: none;
   outline: none;
 }
-
 
 .taskDescription {
   font-size: 12px;

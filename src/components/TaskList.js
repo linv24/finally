@@ -62,12 +62,23 @@ export default function TaskList() {
 	const [editingTask, setEditingTask] = useState(undefined);
 
 	function handleClick(e) {
+		// console.log(e.target)
 		if (e.target.className.indexOf('selectedTask') === -1) {
 			setSelectedTaskId(undefined);
 		}
 
 		if (e.target.className.indexOf('taskTitle') !== -1) {
 			// console.log(e.target)
+		}
+
+		// Double click in empty space below
+		if (e.detail === 2 &&
+			e.target.className.indexOf('taskListBelow') !== -1) {
+			const newTask = new Task({id: getNewTaskId()});
+
+			setTaskList(taskList.concat(newTask.id));
+			handleEditingTaskSelect(newTask.id, 'title');
+			setTaskData(new Map(taskData.set(newTask.id, newTask)));
 		}
 	}
 
@@ -93,7 +104,7 @@ export default function TaskList() {
 		setNewTask(new Task({id: getNewTaskId()}));
 	}
 
-	function handleEditingTaskSelect(e, taskId, taskProp) {
+	function handleEditingTaskSelect(taskId, taskProp) {
 		if (taskId === undefined) {
 			setEditingTask(undefined);
 		}
