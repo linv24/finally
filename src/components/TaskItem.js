@@ -12,7 +12,10 @@ export default function TaskItem({
             onDrag={handleDrag}>
             <input className="taskItemCheckbox" type="checkbox" />
             <div className="taskItemTextContainer">
-                {(editingTask !== undefined && editingTask.id === task.id ?
+                {/* taskTitle */}
+                {(editingTask !== undefined &&
+                  editingTask.id === task.id &&
+                  editingTask.prop === 'title' ?
                     <form
                         onSubmit={(e) => {
                             e.preventDefault();
@@ -29,11 +32,34 @@ export default function TaskItem({
                     </form>
                         :
                     <p className="taskTitle"
-                        onClick={(e) => handleEditingTaskSelect(task.id, 'title')}>
+                        onClick={(e) => handleEditingTaskSelect(e, task.id, 'title')}>
                         {task.title}
                     </p>
                 )}
-                <p className="taskDescription">{task.description}</p>
+                {/* taskDescription */}
+                {(editingTask !== undefined &&
+                  editingTask.id === task.id &&
+                  editingTask.prop === 'description' ?
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleEditingTaskSelect(undefined, undefined);
+                        }}>
+                        <input
+                            className="taskDescription"
+                            type="text"
+                            value={task.description}
+                            onChange={(e) => handleEditingTaskChange(e, task.id, 'description')}
+                            autoFocus
+                            style={{width: task.description.length + 'ch'}} />
+                        <button type="submit" hidden></button>
+                    </form>
+                        :
+                    <p className="taskDescription"
+                        onClick={(e) => handleEditingTaskSelect(e, task.id, 'description')}>
+                        {task.description}
+                    </p>
+                )}
             </div>
             {/* <span className="spanTest">
                 id = {task.id},

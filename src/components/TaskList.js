@@ -93,7 +93,7 @@ export default function TaskList() {
 		setNewTask(new Task({id: getNewTaskId()}));
 	}
 
-	function handleEditingTaskSelect(taskId, taskProp) {
+	function handleEditingTaskSelect(e, taskId, taskProp) {
 		if (taskId === undefined) {
 			setEditingTask(undefined);
 		}
