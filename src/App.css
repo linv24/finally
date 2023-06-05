@@ -1,3 +1,5 @@
+
+
 :root {
   /* baby blue palette */
   --white-1: #ffffff;
@@ -13,8 +15,6 @@
   --primary-dark: #cdcdcd;
   --secondary-light: lightskyblue;
   --secondary-dark: dodgerblue;
-
-  --font-body: normal normal normal normal 14px
 }
 
 html, body {
@@ -28,6 +28,7 @@ html, body {
 * {
   margin: 0;
   padding: 0;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .appContainer {
