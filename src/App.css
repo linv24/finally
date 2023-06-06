@@ -11,10 +11,8 @@
   --blue-2: #ecf1ff;
   --blue-3: dodgerblue;
 
-  --primary-light: aliceblue;
-  --primary-dark: #cdcdcd;
-  --secondary-light: lightskyblue;
-  --secondary-dark: dodgerblue;
+  --font-size-body: 12px;
+  --font-size-sub: 10px;
 }
 
 html, body {
@@ -40,8 +38,8 @@ html, body {
 }
 
 .headerContainer {
-  background-color: var(--secondary-dark);
-  color: var(--primary-light);
+  background-color: var(--blue-3);
+  color: var(--white-1);
   width: 100%;
   padding: 10px;
   display: flex;
