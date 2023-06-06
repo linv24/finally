@@ -1,17 +1,21 @@
+import SidebarItem from './SidebarItem';
 import './Sidebar.css'
 
-export default function Sidebar({}) {
+export default function Sidebar({ handlePaneSelect }) {
   return (
   <div className="sidebarContainer">
-    <span className="material-symbols-outlined">
-      account_circle
-    </span>
-    <span className="material-symbols-outlined">
-      check_box
-    </span>
-    <span className="material-symbols-outlined">
-      calendar_view_day
-    </span>
+    <SidebarItem
+      id="profile"
+      symbol="account_circle"
+      handlePaneSelect={handlePaneSelect} />
+    <SidebarItem
+      id="taskList"
+      symbol="check_box"
+      handlePaneSelect={handlePaneSelect} />
+    <SidebarItem
+      id="timeBox"
+      symbol="calendar_view_day"
+      handlePaneSelect={handlePaneSelect} />
   </div>
   );
 }

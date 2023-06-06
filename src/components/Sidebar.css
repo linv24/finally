@@ -1,3 +1,11 @@
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 20
+}
+
 .sidebarContainer {
   width: 50px;
   height: 100%;
@@ -5,10 +13,16 @@
   overflow: auto;
 }
 
-.material-symbols-outlined {
-  font-variation-settings:
-    'FILL' 1,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 20
+.sidebarItem {
+  padding-top: 15px;
+}
+
+.sidebarSymbol {
+  color: var(--gray-4);
+  cursor: pointer;
+}
+
+.sidebarItem button {
+  background: none;
+  border: none;
 }
