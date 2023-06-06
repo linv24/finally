@@ -138,8 +138,17 @@ export default function TaskList() {
       handleDeselectTask();
     }
     // Add new selected task
-    e.currentTarget.classList.add('selectedTask');
-    setSelectedTaskId(e.currentTarget.id);
+    // If e is a string, it should be a taskId
+    if (typeof e === 'string') {
+      const elt = document.getElementById(e);
+      elt.classList.add('selectedTask');
+      setSelectedTaskId(e);
+    }
+    // Else, handle as event
+    else {
+      e.currentTarget.classList.add('selectedTask');
+      setSelectedTaskId(e.currentTarget.id);
+    }
   }
 
   function handleDeselectTask() {
