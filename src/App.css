@@ -37,6 +37,12 @@ html, body {
   height: 100vh;
 }
 
+.contentContainer {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+
 .headerContainer {
   background-color: var(--blue-3);
   color: var(--white-1);

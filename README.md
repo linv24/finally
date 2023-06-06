@@ -6,6 +6,10 @@ A planner application built for me, by me.
 
 ### Task List
 
+* Subtasking
+
+* Draggable tasks
+
 * Double click below to add new task
 
 ## Bugs

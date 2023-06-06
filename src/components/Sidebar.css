@@ -1,0 +1,14 @@
+.sidebarContainer {
+    width: 50px;
+    height: 100%;
+    background-color: var(--blue-1);
+    overflow: auto;
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+        'FILL' 1,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 20
+}

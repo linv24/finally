@@ -178,6 +178,7 @@ export default function TaskList() {
 	}
 
 	// Dragging
+	// TODO: dragging and subtasking interaction
 	function handleDragStart(e) {
 		e.target.classList.add('draggingTask');
 		handleSelectTask(e);
