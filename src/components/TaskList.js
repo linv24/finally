@@ -65,14 +65,11 @@ export default function TaskList() {
 	const [editingTask, setEditingTask] = useState(undefined);
 
 	function handleClick(e) {
-		console.log(e.target);
+		// console.log(e.target);
 
 		// If click not in selected task, deselect task
 		if (selectedTaskId !== undefined) {
-			console.log('selected', selectedTaskId)
 			const selectBox = document.getElementById(selectedTaskId).getBoundingClientRect();
-			console.log(selectBox)
-			console.log(e.clientX, e.clientY)
 			if (! (selectBox.left <= e.clientX && e.clientX <= selectBox.right &&
 				   selectBox.top <= e.clientY && e.clientY <= selectBox.bottom)) {
 					handleDeselectTask();
@@ -183,6 +180,7 @@ export default function TaskList() {
 	// Dragging
 	function handleDragStart(e) {
 		e.target.classList.add('draggingTask');
+		handleSelectTask(e);
 	}
 
 	function handleDragOver(e) {

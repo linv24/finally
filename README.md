@@ -11,3 +11,5 @@ A planner application built for me, by me.
 ## Bugs
 
 * Double click below => all caps text, text input too small
+
+* When dragging, previously hovered task is still "hovered", even while dragging
