@@ -55,6 +55,10 @@
   background-color: var(--blue-2);
 }
 
+.draggingTask {
+  opacity: 0.5;
+}
+
 .taskItem input[type="checkbox"] {
   margin-right: 10px;
   border: 2px solid var(--blue-3);

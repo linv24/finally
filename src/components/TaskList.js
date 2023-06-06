@@ -46,9 +46,12 @@ export default function TaskList() {
 	useEffect(() => {
 		document.addEventListener('keydown', handleKeyDown);
 		document.addEventListener('click', handleClick);
+		const taskListElt = document.getElementsByClassName('taskListContainer')[0]
+		taskListElt.addEventListener('dragover', handleDragOver);
 		return () => {
 			document.removeEventListener('keydown', handleKeyDown);
 			document.removeEventListener('click', handleClick);
+			taskListElt.removeEventListener('dragover', handleDragOver);
 		}
 	});
 
@@ -80,10 +83,6 @@ export default function TaskList() {
 			handleEditingTaskSelect(newTask.id, 'title');
 			setTaskData(new Map(taskData.set(newTask.id, newTask)));
 		}
-	}
-
-	function handleDrag(e) {
-		e.stopPropagation();
 	}
 
 	function handleNewTaskChange(e) {
@@ -118,11 +117,15 @@ export default function TaskList() {
 				task.title = e.target.value; break;
 			case 'description':
 				task.description = e.target.value; break;
+			default:
+				break;
 		}
 		setTaskData(new Map(taskData.set(taskId, task)));
 	}
 
 	function handleSelectTask(taskId) {
+		// TODO: use e.target.classList.add() instead of JSX ternary
+		// TODO: <li> has taskId in id now, so just use event (for other similar funcs too)
 		setSelectedTaskId(taskId);
 	}
 
@@ -155,6 +158,48 @@ export default function TaskList() {
 					break;
 			}
 		}
+	}
+
+	// Dragging
+	function handleDragStart(e) {
+		e.target.classList.add('draggingTask');
+	}
+
+	function handleDragOver(e) {
+		e.preventDefault();
+		// Get task before which to insert
+		const draggingId = document.getElementsByClassName('draggingTask')[0].id;
+		const listIx = taskList.indexOf(draggingId);
+		const removedTaskList = taskList.slice(0, listIx)
+								    .concat(taskList.slice(listIx+1));
+		const removedTaskElts = removedTaskList.map((taskId) => document.getElementById(taskId));
+		const insertTaskElt = removedTaskElts.reduce((closestElt, currElt) => {
+			// Get bounding box
+			const box = currElt.getBoundingClientRect();
+			// Calculate offset between mouseY and halfway down currElt's box
+			const offset = e.clientY - (box.top + box.height/2);
+			// If offset negative (clientY above taskBox) and offset is
+			// the closest, return currElt
+			if (offset < 0 && offset > closestElt.offset) {
+				return { offset: offset, elt: currElt };
+			} else {
+				return closestElt;
+			}
+		}, { offset: Number.NEGATIVE_INFINITY }).elt;
+
+		// Insert as last element
+		if (insertTaskElt === undefined) {
+			setTaskList(removedTaskList.concat([draggingId]));
+		} else {
+			const insertIx = removedTaskList.indexOf(insertTaskElt.id);
+			setTaskList(removedTaskList.slice(0, insertIx)
+									   .concat(draggingId)
+									   .concat(removedTaskList.slice(insertIx)));
+		}
+	}
+
+	function handleDragEnd(e) {
+		e.target.classList.remove('draggingTask');
 	}
 
 	/**
@@ -310,9 +355,10 @@ export default function TaskList() {
 							editingTask={editingTask}
 							// editingTask={{id: 'test0', prop: 'title'}}
 							handleSelectTask={handleSelectTask}
-							handleDrag={handleDrag}
 							handleEditingTaskChange={handleEditingTaskChange}
-							handleEditingTaskSelect={handleEditingTaskSelect} />
+							handleEditingTaskSelect={handleEditingTaskSelect}
+							handleDragStart={handleDragStart}
+							handleDragEnd={handleDragEnd} />
 					</Fragment>))}
             </ul>
 			<div className="taskListBelow">

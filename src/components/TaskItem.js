@@ -1,15 +1,18 @@
 export default function TaskItem({
     task, selectedTaskId, editingTask,
-    handleSelectTask, handleDrag, handleEditingTaskChange, handleEditingTaskSelect
+    handleSelectTask, handleEditingTaskChange, handleEditingTaskSelect,
+    handleDragStart, handleDragEnd
 }) {
     const tabMarginPx = 20;
 
     return (
         <li className={"taskItem " + (selectedTaskId === task.id ? "selectedTask" : "")}
+            id={task.id}
             onClick={(e) => handleSelectTask(task.id)}
             style={{marginLeft: (task.subNum * tabMarginPx) + "px"}}
             draggable="true"
-            onDrag={handleDrag}>
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}>
             <input className="taskItemCheckbox" type="checkbox" />
             <div className="taskItemTextContainer">
                 {/* taskTitle */}
