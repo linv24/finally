@@ -44,6 +44,7 @@
   user-select: text;
   display: flex;
   flex-direction: row;
+  align-items: center;
   padding: 5px;
 }
 
@@ -63,7 +64,33 @@
 
 .taskItem input[type="checkbox"] {
   margin-right: 10px;
-  border: 2px solid var(--blue-3);
+  appearance: none;
+  width: 1em;
+  height: 1em;
+  border: 0.11em solid var(--gray-4);
+  border-radius: 0.1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.taskItem input[type="checkbox"]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  transition: 75ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--gray-4);
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+/* TODO: inverted checkbox color */
+
+.taskItem input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+.taskItem input[type="checkbox"]:focus {
+  outline: max(1px, 0.1em) solid var(--blue-3);
 }
 
 .taskItemTextContainer {
