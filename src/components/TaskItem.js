@@ -6,9 +6,9 @@ export default function TaskItem({
     const tabMarginPx = 20;
 
     return (
-        <li className={"taskItem " + (selectedTaskId === task.id ? "selectedTask" : "")}
+        <li className="taskItem"
             id={task.id}
-            onClick={(e) => handleSelectTask(task.id)}
+            onClick={handleSelectTask}
             style={{marginLeft: (task.subNum * tabMarginPx) + "px"}}
             draggable="true"
             onDragStart={handleDragStart}

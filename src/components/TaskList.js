@@ -65,14 +65,22 @@ export default function TaskList() {
 	const [editingTask, setEditingTask] = useState(undefined);
 
 	function handleClick(e) {
-		// console.log(e.target)
-		if (e.target.className.indexOf('selectedTask') === -1) {
-			setSelectedTaskId(undefined);
+		console.log(e.target);
+
+		// If click not in selected task, deselect task
+		if (selectedTaskId !== undefined) {
+			console.log('selected', selectedTaskId)
+			const selectBox = document.getElementById(selectedTaskId).getBoundingClientRect();
+			console.log(selectBox)
+			console.log(e.clientX, e.clientY)
+			if (! (selectBox.left <= e.clientX && e.clientX <= selectBox.right &&
+				   selectBox.top <= e.clientY && e.clientY <= selectBox.bottom)) {
+					handleDeselectTask();
+			}
 		}
 
-		if (e.target.className.indexOf('taskTitle') !== -1) {
-			// console.log(e.target)
-		}
+		// TODO: click off deselects editing text
+		// TODO: checking box doesn't select, e.stopPropagation()
 
 		// Double click in empty space below
 		if (e.detail === 2 &&
@@ -123,10 +131,22 @@ export default function TaskList() {
 		setTaskData(new Map(taskData.set(taskId, task)));
 	}
 
-	function handleSelectTask(taskId) {
-		// TODO: use e.target.classList.add() instead of JSX ternary
+	function handleSelectTask(e) {
 		// TODO: <li> has taskId in id now, so just use event (for other similar funcs too)
-		setSelectedTaskId(taskId);
+		// Remove previous selected task
+		if (selectedTaskId !== undefined) {
+			handleDeselectTask();
+		}
+		// Add new selected task
+		e.currentTarget.classList.add('selectedTask');
+		setSelectedTaskId(e.currentTarget.id);
+	}
+
+	function handleDeselectTask() {
+		if (selectedTaskId !== undefined) {
+			document.getElementById(selectedTaskId).classList.remove('selectedTask');
+		}
+		setSelectedTaskId(undefined);
 	}
 
 	function handleKeyDown(e) {
