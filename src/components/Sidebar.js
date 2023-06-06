@@ -1,5 +1,5 @@
 import SidebarItem from './SidebarItem';
-import './Sidebar.css'
+import '../styles/Sidebar.css'
 
 export default function Sidebar({ handlePaneSelect }) {
   return (

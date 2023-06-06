@@ -1,4 +1,4 @@
-import './Sidebar.css';
+import '../styles/Sidebar.css';
 
 export default function SidebarItem({ id, symbol, hoverText, handlePaneSelect }) {
   return (

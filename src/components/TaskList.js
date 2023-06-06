@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect } from 'react';
 import TaskInput from './TaskInput';
 import TaskItem from './TaskItem';
-import './TaskList.css'
+import '../styles/TaskList.css'
 // TODO add assertions
 
 class Task {

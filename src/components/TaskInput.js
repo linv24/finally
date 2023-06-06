@@ -1,4 +1,4 @@
-import "../App.css"
+import '../styles/TaskList.css';
 
 export default function TaskInput({ newTask, handleNewTaskChange, handleNewTaskSubmit }) {
   return (

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Header from './components/Header';
 import TaskList from './components/TaskList';
 import Sidebar from './components/Sidebar';
-import './App.css';
+import './styles/App.css';
 
 const Panes = {
   profile: 'profile',
