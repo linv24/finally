@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Header from './components/Header';
 import TaskList from './components/TaskList';
+import TimeBox from './components/TimeBox';
 import Sidebar from './components/Sidebar';
 import './styles/App.css';
 
@@ -24,8 +25,11 @@ export default function App() {
       <div className="contentContainer">
         <Sidebar
           handlePaneSelect={handlePaneSelect} />
-        {activePane === Panes["taskList"] &&
+        {activePane === Panes.taskList &&
           <TaskList />
+        }
+        {activePane === Panes.timeBox &&
+          <TimeBox />
         }
       </div>
     </div>
