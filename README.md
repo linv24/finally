@@ -2,7 +2,7 @@
 
 A planner application built for me, by me.
 
-## Functionality
+## Functionality (WIP)
 
 ### Task List
 
